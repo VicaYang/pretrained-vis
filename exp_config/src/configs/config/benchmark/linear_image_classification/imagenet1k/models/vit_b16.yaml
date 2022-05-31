@@ -54,6 +54,9 @@ config:
     FEATURE_EVAL_SETTINGS:
       EVAL_MODE_ON: True
       FREEZE_TRUNK_ONLY: True
+      LINEAR_EVAL_FEAT_POOL_OPS_MAP: [
+        ["lastCLS", ["Identity", []]],
+      ]
     TRUNK:
       NAME: vision_transformer
       VISION_TRANSFORMERS:

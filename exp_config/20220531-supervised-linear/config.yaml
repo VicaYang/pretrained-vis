@@ -12,10 +12,24 @@ target:
 #   queue: bonus
 
 environment:
-  image: vicayang/vicavissl:latest
+  image: mengcliu/a100:05252022
+  registry: mainztrainercorecontainerregistrywu2.azurecr.io
+  username: MainzTrainerCoreContainerRegistryWU2
   setup:
   - echo "setup"
-  - mkdir -p /mnt/output/vica-s/linear/supervised
+  - mkdir -p /mnt/output/vica-s/fulltune/supervised
+  - cd /tmp/code
+  - git clone --recursive https://github.com/facebookresearch/vissl.git
+  - cd vissl
+  - git checkout v0.1.6
+  - git checkout -b v0.1.6
+  - pip install --progress-bar off -r requirements.txt
+  - pip install opencv-python 
+  - pip install classy-vision@https://github.com/facebookresearch/ClassyVision/tarball/4785d5ee19d3bcedd5b28c1eb51ea1f59188b54d
+  - pip install fairscale==0.4.6
+  - pip install -e ".[dev]"
+  - python -c 'import vissl, apex'
+  - echo "setup finished"
 
 storage:
   output:

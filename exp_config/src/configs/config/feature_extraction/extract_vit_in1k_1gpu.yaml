@@ -70,4 +70,4 @@ config:
         DROPOUT_RATE: 0.1
         ATTENTION_DROPOUT_RATE: 0
         CLASSIFIER: token
-        QKV_BIAD: true
+        QKV_BIAS: true

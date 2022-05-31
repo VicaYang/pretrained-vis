@@ -4,8 +4,8 @@
         "val": ["airstore://flashblade_imagenet_val", "<unused>"]
     },
     "imagenet1k_folder": {
-        "train": ["/mnt/datasets/imagenet2012/train", "/mnt/datasets/imagenet2012/train"],
-        "val": ["/mnt/datasets/imagenet2012/val", "/mnt/datasets/imagenet2012/val"]
+        "train": ["/mnt/datasets/imagenet/train", "/mnt/datasets/imagenet/train"],
+        "val": ["/mnt/datasets/imagenet/val", "/mnt/datasets/imagenet/val"]
     },
     "imagenet_a_filelist": {
         "train": ["<not_used>", "<not_used>"],

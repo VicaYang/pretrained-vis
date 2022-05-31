@@ -17,6 +17,7 @@ environment:
   username: MainzTrainerCoreContainerRegistryWU2
   setup:
   - echo "setup"
+  - rm -rf /mnt/output/vica-s/fulltune/supervised
   - mkdir -p /mnt/output/vica-s/fulltune/supervised
   - cd /tmp/code
   - git clone --recursive https://github.com/facebookresearch/vissl.git
@@ -51,5 +52,6 @@ jobs:
   sku: 1xG8
   process_count_per_node: 1
   command:
+  - bash replace.sh
   - wget -c https://dl.fbaipublicfiles.com/vissl/model_zoo/baselines/vit_b16_p16_in22k_ep90_supervised.torch
   - python run_distributed_engines.py hydra.verbose=true config=benchmark/fulltune/imagenet1k/eval_vit_8gpu_transfer_in1k_finetune +config/benchmark/fulltune/imagenet1k/models=vit_b16_vica config.CHECKPOINT.DIR="/mnt/output/vica-s/fulltune/supervised" config.MODEL.WEIGHTS_INIT.PARAMS_FILE="vit_b16_p16_in22k_ep90_supervised.torch" config.MODEL.WEIGHTS_INIT.APPEND_PREFIX="trunk." config.MODEL.WEIGHTS_INIT.STATE_DICT_KEY_NAME=classy_state_dict config.DISTRIBUTED.NUM_PROC_PER_NODE=8 

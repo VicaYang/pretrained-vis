@@ -1,0 +1,41 @@
+description: vica-pretrained-vis
+
+target:
+  service: amlk8s
+  subscription_id: 16a0eb80-d105-4432-a870-3b6dc4b8d81b # WUS3
+  resource_group: Azure-WestUS3-A100-aml
+  workspace_name: ORT-wus2
+  cluster: itp-a100-wu3
+# target:
+#   service: amlk8s
+#   name: ms-shared
+#   queue: bonus
+
+environment:
+  image: vicayang/vicavissl:latest
+  setup:
+  - echo "setup"
+  - mkdir -p /mnt/output/vica-s/fulltune/supervised
+
+storage:
+  output:
+    storage_account_name: mengchenwu3
+    # storage_account_name: yuanjun
+    container_name: logger
+    mount_dir: /mnt/output
+    is_output: True
+  imagenet:
+    storage_account_name: pubdatasets
+    container_name: imagenet
+    mount_dir: /mnt/datasets/imagenet
+
+code:
+  local_dir: $CONFIG_DIR/../src
+
+jobs:
+- name: vica-supervised-fulltune
+  sku: 1xG8
+  process_count_per_node: 1
+  command:
+  - wget -c https://dl.fbaipublicfiles.com/vissl/model_zoo/baselines/vit_b16_p16_in22k_ep90_supervised.torch
+  - python run_distributed_engines.py hydra.verbose=true config=benchmark/fulltune/imagenet1k/eval_vit_8gpu_transfer_in1k_finetune +config/benchmark/fulltune/imagenet1k/models=vit_b16_vica config.CHECKPOINT.DIR="/mnt/output/vica-s/fulltune/supervised" config.MODEL.WEIGHTS_INIT.PARAMS_FILE="vit_b16_p16_in22k_ep90_supervised.torch" config.MODEL.WEIGHTS_INIT.APPEND_PREFIX="trunk." config.MODEL.WEIGHTS_INIT.STATE_DICT_KEY_NAME=classy_state_dict config.DATA.TRAIN.BATCHSIZE_PER_REPLICA=256 config.DATA.TEST.BATCHSIZE_PER_REPLICA=256 config.DISTRIBUTED.NUM_PROC_PER_NODE=8 

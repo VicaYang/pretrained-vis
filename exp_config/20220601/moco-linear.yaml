@@ -20,10 +20,8 @@ environment:
   - rm -rf /mnt/output/vica-s/linear/moco
   - mkdir -p /mnt/output/vica-s/linear/moco
   - cd /tmp/code
-  - git clone --recursive https://github.com/facebookresearch/vissl.git
+  - git clone --recursive git@github.com:VicaYang/vissl.git
   - cd vissl
-  - git checkout v0.1.6
-  - git checkout -b v0.1.6
   - pip install --progress-bar off -r requirements.txt
   - pip install opencv-python 
   - pip install classy-vision@https://github.com/facebookresearch/ClassyVision/tarball/4785d5ee19d3bcedd5b28c1eb51ea1f59188b54d

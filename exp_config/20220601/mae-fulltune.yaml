@@ -50,6 +50,5 @@ jobs:
   sku: 1xG8
   process_count_per_node: 1
   command:
-  - bash replace.sh
   - wget -c https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_base.pth
   - python run_distributed_engines.py hydra.verbose=true config=benchmark/fulltune/imagenet1k/eval_vit_8gpu_transfer_in1k_finetune +config/benchmark/fulltune/imagenet1k/models=vit_b16_vica config.CHECKPOINT.DIR="/mnt/output/vica-s/fulltune/mae" config.MODEL.WEIGHTS_INIT.PARAMS_FILE="mae_pretrain_vit_base.pth" config.MODEL.WEIGHTS_INIT.APPEND_PREFIX="trunk." config.MODEL.WEIGHTS_INIT.STATE_DICT_KEY_NAME="model" config.DISTRIBUTED.NUM_PROC_PER_NODE=8 

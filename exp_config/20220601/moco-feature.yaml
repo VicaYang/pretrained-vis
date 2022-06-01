@@ -50,6 +50,5 @@ jobs:
   sku: 1xG8
   process_count_per_node: 1
   command:
-  - bash replace.sh
   - wget -c https://dl.fbaipublicfiles.com/vissl/model_zoo/swav_rn50w5/mocov3-vit-b-300ep.pth.tar
   - python run_distributed_engines.py hydra.verbose=true config=feature_extraction/extract_vit_in1k_1gpu config.CHECKPOINT.DIR="/mnt/output/vica-s/feature/moco" config.MODEL.WEIGHTS_INIT.PARAMS_FILE="mocov3-vit-b-300ep.pth.tar" config.MODEL.WEIGHTS_INIT.APPEND_PREFIX="trunk.base_model." config.MODEL.WEIGHTS_INIT.REMOVE_PREFIX="module.base_encoder." config.MODEL.WEIGHTS_INIT.STATE_DICT_KEY_NAME="state_dict" config.DISTRIBUTED.NUM_PROC_PER_NODE=8 

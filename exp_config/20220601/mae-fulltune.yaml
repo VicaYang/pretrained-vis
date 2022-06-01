@@ -20,7 +20,7 @@ environment:
   - rm -rf /mnt/output/vica-s/fulltune/mae
   - mkdir -p /mnt/output/vica-s/fulltune/mae
   - cd /tmp/code
-  - git clone --recursive git@github.com:VicaYang/vissl.git
+  - git clone --recursive https://github.com/VicaYang/vissl.git
   - cd vissl
   - pip install --progress-bar off -r requirements.txt
   - pip install opencv-python 

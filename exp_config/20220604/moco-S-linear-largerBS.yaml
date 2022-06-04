@@ -1,0 +1,54 @@
+description: vica-pretrained-vis
+
+target:
+  service: amlk8s
+  subscription_id: 16a0eb80-d105-4432-a870-3b6dc4b8d81b # WUS3
+  resource_group: Azure-WestUS3-A100-aml
+  workspace_name: ORT-wus2
+  cluster: itp-a100-wu3
+# target:
+#   service: amlk8s
+#   name: ms-shared
+#   queue: bonus
+
+environment:
+  image: mengcliu/a100:05252022
+  registry: mainztrainercorecontainerregistrywu2.azurecr.io
+  username: MainzTrainerCoreContainerRegistryWU2
+  setup:
+  - echo "setup"
+  - rm -rf /mnt/output/vica-s/linear/moco-S-largerBS
+  - mkdir -p /mnt/output/vica-s/linear/moco-S-largerBS
+  - cd /tmp/code
+  - git clone --recursive https://github.com/VicaYang/vissl.git
+  - cd vissl
+  - pip install --progress-bar off -r requirements.txt
+  - pip install opencv-python 
+  - pip install classy-vision@https://github.com/facebookresearch/ClassyVision/tarball/4785d5ee19d3bcedd5b28c1eb51ea1f59188b54d
+  - pip install fairscale==0.4.6
+  - pip install -e ".[dev]"
+  - python -c 'import vissl, apex'
+  - echo "setup finished"
+
+storage:
+  output:
+    storage_account_name: mengchenwu3
+    # storage_account_name: yuanjun
+    container_name: logger
+    mount_dir: /mnt/output
+    is_output: True
+  imagenet:
+    storage_account_name: pubdatasets
+    container_name: imagenet
+    mount_dir: /mnt/datasets/imagenet
+
+code:
+  local_dir: $CONFIG_DIR/../src
+
+jobs:
+- name: vica-moco-linear
+  sku: 1xG8
+  process_count_per_node: 1
+  command:
+  - wget -c https://dl.fbaipublicfiles.com/moco-v3/vit-s-300ep/vit-s-300ep.pth.tar
+  - python run_distributed_engines.py hydra.verbose=true config=benchmark/linear_image_classification/imagenet1k/eval_resnet_8gpu_transfer_in1k_linear +config/benchmark/linear_image_classification/imagenet1k/models=vit_s16 config.CHECKPOINT.DIR="/mnt/output/vica-s/linear/moco-S-largerBS" config.MODEL.WEIGHTS_INIT.PARAMS_FILE="vit-s-300ep.pth.tar" config.MODEL.WEIGHTS_INIT.APPEND_PREFIX="trunk." config.MODEL.WEIGHTS_INIT.REMOVE_PREFIX="module.base_encoder." config.MODEL.WEIGHTS_INIT.STATE_DICT_KEY_NAME="state_dict" config.DATA.TRAIN.BATCHSIZE_PER_REPLICA=4096 config.DATA.TEST.BATCHSIZE_PER_REPLICA=4096 config.DISTRIBUTED.NUM_PROC_PER_NODE=8 config.MODEL.TRUNK.VISION_TRANSFORMERS.QKV_BIAS=true
